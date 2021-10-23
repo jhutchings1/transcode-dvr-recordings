@@ -8,7 +8,7 @@ foreach ($file in (Get-ChildItem -Recurse | Where-Object {$_.Extension -eq ".mpg
   $finished = New-Item -Path "$($file.DirectoryName)/finished" -ItemType Directory -ErrorAction SilentlyContinue
 
   #Convert the file
-  Invoke-Expression "ffmpeg -i `"$($file.Name)`" `"$($file.BaseName).mp4`""
+  Invoke-Expression "ffmpeg -i `"$($file.Name)`" `"$($file.BaseName).mp4`" -n" 
   
   # Move the old file to the finished directory
   Move-Item -Path $file.Name -Destination "$($finished.FullName)/$($file.Name)"
