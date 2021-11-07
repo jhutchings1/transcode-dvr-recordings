@@ -7,6 +7,10 @@ foreach ($mpg in (Get-ChildItem -Recurse | Where-Object {$_.Extension -eq ".mpg"
   # Create a directory for finished files
   $finishedDir = New-Item -Path "$($mpg.DirectoryName)/finished" -ItemType Directory -ErrorAction SilentlyContinue
 
+  if ($finishedDir -eq $null) {
+    $finishedDir = Get-Item -Path "$($mpg.DirectoryName)/finished"
+  }
+
   #Convert the file
   Invoke-Expression "ffmpeg -i `"$($mpg.Name)`" `"$($mpg.BaseName).mp4`" -n" 
   
