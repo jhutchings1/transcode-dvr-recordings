@@ -10,7 +10,4 @@ foreach ($file in (Get-ChildItem -Path $path -Recurse | Where-Object {$_.Extensi
 
   #Convert the file
   Invoke-Expression "ffmpeg -i `"$($file.FullName)`" `"$($finished.FullName)/$($file.BaseName).mp4`" -n" 
-  
-  # Move the old file to the finished directory
-  Move-Item -Path $file.Name -Destination "$($finished.FullName)/$($file.Name)"
 }
