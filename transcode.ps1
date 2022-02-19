@@ -20,7 +20,7 @@ foreach ($file in (Get-ChildItem -Path $path -Recurse | Where-Object {$_.Extensi
   
   if (!(Test-Path "$($finishedPath.FullName)/$($file.BaseName).mp4")) {
     #Convert the file
-    Invoke-Expression "ffmpeg -i `"$($file.FullName)`" `"$($finishedPath.FullName)/$($file.BaseName).mp4`" -n" 
+    Invoke-Expression "ffmpeg -hwaccel auto -i `"$($file.FullName)`" `"$($finishedPath.FullName)/$($file.BaseName).mp4`" -n -vcodec h265_videotoolbox -acodec aac" 
   }
   
 }
