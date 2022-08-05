@@ -1,14 +1,41 @@
-FROM debian:latest
+FROM alpine:latest
 
-RUN apt update && apt install -y ffmpeg curl gnupg apt-transport-https
+RUN apk add --no-cache \
+    ffmpeg \
+    curl \
+    gnupg \
+    ca-certificates \
+    less \
+    ncurses-terminfo-base \
+    krb5-libs \
+    libgcc \
+    libintl \
+    libssl1.1 \
+    libstdc++ \
+    tzdata \
+    userspace-rcu \
+    zlib \
+    icu-libs 
 
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+#RUN sudo apk -X https://dl-cdn.alpinelinux.org/alpine/edge/main add --no-cache \
+#    lttng-ust
 
-# Register the Microsoft Product feed
-RUN sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-bullseye-prod bullseye main" > /etc/apt/sources.list.d/microsoft.list'
+RUN apk add lttng-ust-dev
 
-# Install PowerShell
-RUN apt update && apt install -y powershell
+# Download the powershell '.tar.gz' archive
+RUN curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.2.5/powershell-7.2.5-linux-alpine-x64.tar.gz -o /tmp/powershell.tar.gz
+
+# Create the target folder where powershell will be placed
+RUN mkdir -p /opt/microsoft/powershell/7
+
+# Expand powershell to the target folder
+RUN tar zxf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/7
+
+# Set execute permissions
+RUN chmod +x /opt/microsoft/powershell/7/pwsh
+
+# Create the symbolic link that points to pwsh
+RUN ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh
 
 COPY transcode.ps1 /transcoder/transcode.ps1
 
