@@ -13,5 +13,10 @@ This script automatically transcodes all of the mpeg formatted videos in a DVR's
 ./transcode -path "path/to/directory"
 ```
 
+If you use Docker instead of calling this directly, you can execute the container as follows. The example below demonstrates mapping a volume into the container (for example, your DVR), and then specifying the mapped volume as a parameter to the container. 
+```sh
+docker run -v '/Users/username/DVR':/tv ghcr.io/jhutchings1/transcode-dvr-recordings:main "/tv"
+```
+
 ## License
 This source is available under the MIT License.
