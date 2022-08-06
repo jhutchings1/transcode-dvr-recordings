@@ -1,19 +1,26 @@
-$dvrRoot = "" # Set the appropriate root directory for your DVR here
-cd $dvrRoot
+param(
+  [string] $path
+)
+
+function createFinishedPath($file) {
+  $finishedPath = $null
+  if (Test-Path "$($file.DirectoryName)/finished") {
+    $finishedPath = Get-Item -Path "$($file.DirectoryName)/finished"
+  } else {
+    # Create a directory for finished files
+    $finishedPath = New-Item -Path "$($file.DirectoryName)/finished" -ItemType Directory 
+  }
+  return $finishedPath
+}
 
 # Loops through all of the files in the $dvrRoot directory where the extension is .mpg
 # Calls ffmpeg to convert from mpeg-2 to mpeg-4
-foreach ($mpg in (Get-ChildItem -Recurse | Where-Object {$_.Extension -eq ".mpg" -and $_.DirectoryName -notcontains "finished"})) {
-  # Create a directory for finished files
-  $finishedDir = New-Item -Path "$($mpg.DirectoryName)/finished" -ItemType Directory -ErrorAction SilentlyContinue
 
-  if ($finishedDir -eq $null) {
-    $finishedDir = Get-Item -Path "$($mpg.DirectoryName)/finished"
-  }
-
-  #Convert the file
-  Invoke-Expression "ffmpeg -i `"$($mpg.Name)`" `"$($mpg.BaseName).mp4`" -n" 
+foreach ($file in (Get-ChildItem -Path $path -Recurse | Where-Object {$_.Extension -eq ".mpg" -and $_.DirectoryName -notcontains "finished"})) {
+  $finishedPath = createFinishedPath($file)
   
-  # Move the old file to the finished directory
-  Move-Item -Path $mpg.Name -Destination "$($finishedDir.FullName)/$($mpg.Name)"
+  if (!(Test-Path "$($finishedPath.FullName)/$($file.BaseName).mp4")) {
+    #Convert the file
+    Invoke-Expression "ffmpeg -hwaccel auto -i `"$($file.FullName)`" `"$($finishedPath.FullName)/$($file.BaseName).mp4`" -n -vcodec h265_videotoolbox -acodec aac" 
+  }
 }
