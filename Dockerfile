@@ -10,7 +10,6 @@ RUN apk add --no-cache \
     krb5-libs \
     libgcc \
     libintl \
-    libssl1.1 \
     libstdc++ \
     tzdata \
     userspace-rcu \
@@ -23,7 +22,7 @@ RUN apk add --no-cache \
 RUN apk add lttng-ust-dev
 
 # Download the powershell '.tar.gz' archive
-RUN curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.2.5/powershell-7.2.5-linux-alpine-x64.tar.gz -o /tmp/powershell.tar.gz
+RUN curl -L https://github.com/PowerShell/PowerShell/releases/download/v7.4.1/powershell-7.4.1-linux-x64.tar.gz -o /tmp/powershell.tar.gz
 
 # Create the target folder where powershell will be placed
 RUN mkdir -p /opt/microsoft/powershell/7
