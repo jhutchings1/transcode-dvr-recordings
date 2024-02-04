@@ -1,5 +1,6 @@
 param(
-  [string] $path
+  [string] $path,
+  [bool] $hwaccel
 )
 
 function createFinishedPath($file) {
@@ -13,14 +14,28 @@ function createFinishedPath($file) {
   return $finishedPath
 }
 
+function createFFMPEGExpression($inputName, $outputName, $hwaccel) {
+  $output = "ffmpeg -hide_banner "
+  if ($hwaccel) {
+    $output += "-hwaccel auto "
+  }
+  $output += "-i `"$($inputName)`" "
+  $output += "`"$($outputName)`" "
+  $output += "-n -vcodec libx265 -acodec aac "
+  return $output
+}
+
 # Loops through all of the files in the $dvrRoot directory where the extension is .mpg
 # Calls ffmpeg to convert from mpeg-2 to mpeg-4
 
-foreach ($file in (Get-ChildItem -Path $path -Recurse | Where-Object {$_.Extension -eq ".mpg" -and $_.DirectoryName -notcontains "finished"})) {
-  $finishedPath = createFinishedPath($file)
+foreach ($file in (Get-ChildItem -Path $path -Recurse | Where-Object {$_.Extension -eq ".mpg"})) {
+  $outputFile = "$($file.BaseName).mp4"
   
-  if (!(Test-Path "$($finishedPath.FullName)/$($file.BaseName).mp4")) {
+  if (!(Test-Path $outputFile)) {
+    $expression = createFFMPEGExpression $file.FullName $outputFile $hwaccel;
+    
     #Convert the file
-    Invoke-Expression "ffmpeg -hide_banner -hwaccel auto -i `"$($file.FullName)`" `"$($finishedPath.FullName)/$($file.BaseName).mp4`" -n -vcodec libx265 -acodec aac" 
+    #Invoke-Expression $expression 
+    Write-host $expression
   }
 }
