@@ -29,13 +29,13 @@ function createFFMPEGExpression($inputName, $outputName, $hwaccel) {
 # Calls ffmpeg to convert from mpeg-2 to mpeg-4
 
 foreach ($file in (Get-ChildItem -Path $path -Recurse | Where-Object {$_.Extension -eq ".mpg"})) {
-  $outputFile = "$($file.BaseName).mp4"
+  $outputFile = "$($file.DirectoryName)/$($file.BaseName).mp4"
   
   if (!(Test-Path $outputFile)) {
-    $expression = createFFMPEGExpression $file.FullName $outputFile $hwaccel;
+    $expression = createFFMPEGExpression $file.FullName "$outputFile" $hwaccel;
     
     #Convert the file
-    #Invoke-Expression $expression 
-    Write-host $expression
+    Write-Host "Converting $($file.FullName)"
+    Invoke-Expression $expression
   }
 }
