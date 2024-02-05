@@ -15,12 +15,13 @@ function createFinishedPath($file) {
 }
 
 function createFFMPEGExpression($inputName, $outputName, $hwaccel) {
-  $output = "ffmpeg -hide_banner "
+  $output = "ffmpeg "
   if ($hwaccel) {
     $output += "-hwaccel auto "
   }
   $output += "-i `"$($inputName)`" "
-  $output += "-n -c:v libx265 -crf 32 -preset medium -acodec aac "
+  # Obtained from https://alfg.dev/ffmpeg-commander/
+  $output += "-c:v libx265 -preset medium -crf 32 -c:a copy -n -hide_banner " 
   $output += "`"$($outputName)`" "
 
   return $output
