@@ -20,8 +20,9 @@ function createFFMPEGExpression($inputName, $outputName, $hwaccel) {
     $output += "-hwaccel auto "
   }
   $output += "-i `"$($inputName)`" "
+  $output += "-n -c:v libx265 -crf 32 -preset medium -acodec aac "
   $output += "`"$($outputName)`" "
-  $output += "-n -vcodec libx265 -acodec aac "
+
   return $output
 }
 
