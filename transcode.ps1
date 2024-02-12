@@ -21,7 +21,7 @@ function createFFMPEGExpression($inputName, $outputName, $hwaccel) {
   }
   $output += "-i `"$($inputName)`" "
   # Obtained from https://alfg.dev/ffmpeg-commander/
-  $output += "-c:v libx265 -preset medium -crf 32 -c:a copy -n -hide_banner " 
+  $output += "-c:v libx265 -preset medium -crf 23 -c:a copy -n -hide_banner " 
   $output += "`"$($outputName)`" "
 
   return $output
