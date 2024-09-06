@@ -3,7 +3,7 @@ param(
 )
 
 
-$items = (Get-ChildItem -Path $path | Where-Object { $_.Extension -eq ".mp4" -or $_.Extension -eq ".mpg" })
+$items = (Get-ChildItem -Path $path -Recurse | Where-Object { $_.Extension -eq ".mp4" -or $_.Extension -eq ".mpg" })
 $outputItems = @()
 
 foreach ($item in $items) {
@@ -16,8 +16,8 @@ foreach ($item in $items) {
         $outputItem | Add-Member -MemberType NoteProperty -Name "Height" -Value $_.height
         $outputItem | Add-Member -MemberType NoteProperty -Name "Duration" -Value $_.duration
         $outputItem | Add-Member -MemberType NoteProperty -Name "Codec" -Value $_.codec_name
-        $outputItem | Add-Member -MemberType NoteProperty -Name "FileSize" -Value $item.Size
-    $outputItems += $outputItem
+        $outputItem | Add-Member -MemberType NoteProperty -Name "FileSize" -Value $item.FileSize
     }
+    $outputItems += $outputItem
 }
 $outputItems
